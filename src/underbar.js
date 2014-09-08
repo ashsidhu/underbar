@@ -151,6 +151,15 @@ var _ = {};
   // Calls the method named by functionOrKey on each value in the list.
   // Note: you will nead to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    var callback = function (item) {
+      if (typeof functionOrKey === 'string') {
+        functionOrKey = item[functionOrKey];
+      }
+
+      return functionOrKey.apply(item, [item]);
+    };
+
+    return _.map(collection, callback);
   };
 
   // Reduces an array or object to a single value by repetitively calling
@@ -244,6 +253,13 @@ var _ = {};
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        obj[key] = source[key];
+      }
+    };
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
