@@ -176,7 +176,7 @@ var _ = {};
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
-    if (collection.length === 0) return true;
+    if (collection.length === 0) return accumulator;
     
     accumulator = (accumulator != null) ? accumulator : collection[0];
     accumulator = iterator(accumulator, collection[0]);
@@ -255,6 +255,7 @@ var _ = {};
   _.extend = function(obj) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
+
       for (var key in source) {
         obj[key] = source[key];
       }
@@ -265,6 +266,21 @@ var _ = {};
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var keys = [];
+
+    _.each(obj, function(val, key, object) {
+      keys.push(key);
+    });
+
+    for (var i = arguments.length - 1; i > 0; i--) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (!_.contains(keys, key)) {
+          obj[key] = source[key];
+        }
+      }
+    }
+    return obj;
   };
 
 
