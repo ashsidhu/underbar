@@ -167,12 +167,12 @@ var _ = {};
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
+    if (collection.length === 0) return true;
+    
     accumulator = (accumulator != null) ? accumulator : collection[0];
     accumulator = iterator(accumulator, collection[0]);
 
-    if (collection.length === 1) {
-      return accumulator;
-    }
+    if (collection.length === 1) return accumulator;
 
     return _.reduce(collection.slice(1), iterator, accumulator);
   };
@@ -202,12 +202,26 @@ var _ = {};
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    iterator = iterator || _.identity;
+
+    var callback = function (isPassing, item) {
+      return isPassing && !!iterator(item);
+    };
+
+    return _.reduce(collection, callback, true)
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+
+    var callback = function (item) {
+      return !iterator(item);
+    };
+
+    return !_.every(collection, callback);
   };
 
 
